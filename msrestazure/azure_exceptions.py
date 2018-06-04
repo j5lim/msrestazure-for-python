@@ -53,6 +53,7 @@ class CloudErrorData(object):
         'message': {'key': 'message', 'type': 'str'},
         'target': {'key': 'target', 'type': 'str'},
         'details': {'key': 'details', 'type': '[CloudErrorData]'},
+        'innererror': {'key': 'innererror', 'type': 'object'},
         'additionalInfo': {'key': 'additionalInfo', 'type': '[TypedErrorInfo]'},
         'data': {'key': 'values', 'type': '{str}'}
         }
@@ -64,6 +65,7 @@ class CloudErrorData(object):
         self.error_time = None
         self.target = kwargs.get('target')
         self.details = kwargs.get('details')
+        self.innererror = kwargs.get('innererror')
         self.additionalInfo = kwargs.get('additionalInfo')
         self.data = kwargs.get('data')
         super(CloudErrorData, self).__init__(*args)
@@ -89,10 +91,14 @@ class CloudErrorData(object):
                 error_str += "\n\tMessage: {}".format(error_obj.message)
                 if error_obj.target:
                     error_str += "\n\tTarget: {}".format(error_obj.target)
+                if error_obj.innererror: 
+                    error_str += "\nInner error: {}".format(json.dumps(error_obj.innererror, indent=4)) 
                 if error_obj.additionalInfo:
                     error_str += "\n\tAdditional Information:"
                     for error_info in error_obj.additionalInfo:
                         error_str += "\n\t\t{}".format(str(error_info).replace("\n", "\n\t\t"))
+        if self.innererror: 
+            error_str += "\nInner error: {}".format(json.dumps(self.innererror, indent=4)) 
         if self.additionalInfo:
             error_str += "\nAdditional Information:"
             for error_info in self.additionalInfo:

@@ -114,6 +114,9 @@ class TestCloudException(unittest.TestCase):
                     "message": "$search query option not supported",
                 }
             ],
+            "innererror": { 
+                "customKey": "customValue" 
+            }, 
             "additionalInfo": [
                 {
                     "type": "SomeErrorType",
@@ -126,6 +129,7 @@ class TestCloudException(unittest.TestCase):
         cloud_exp = self._d(CloudErrorData(), message)
         self.assertEqual(cloud_exp.target, 'query')
         self.assertEqual(cloud_exp.details[0].target, '$search')
+        self.assertEqual(cloud_exp.innererror['customKey'], 'customValue') 
         self.assertEqual(cloud_exp.additionalInfo[0].type, 'SomeErrorType')
         self.assertEqual(cloud_exp.additionalInfo[0].info['customKey'], 'customValue')
         self.assertIn('customValue', str(cloud_exp))
